@@ -10,7 +10,7 @@ joint confirmation (M4).
 
 The Python pipeline lives in `triad/`; the kernel-execution backend (executor,
 fuzzing manager and single-program runner) is the fuzzing infrastructure in
-`fuzzer/`; the evaluation cohort is in `data/`.
+`fuzzer/`.
 
 ## Features
 
