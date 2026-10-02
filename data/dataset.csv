@@ -1,0 +1,5 @@
+grp,definition,samples,tags
+Align + seed,Visible analysis and a usable seed,4,public-cve; public PoC
+Align + free,Visible analysis but no usable seed,17,public-cve; no seed
+Infer + seed,No usable analysis but a usable seed,1,syzbot; reproducer attached
+Infer + free,No usable analysis and no usable seed,4,public-cve; mechanism inferred

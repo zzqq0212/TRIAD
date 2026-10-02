@@ -1,0 +1,783 @@
+[
+	{
+		"Model": "model",
+		"Config": {
+			"systemInstruction": {
+				"parts": [
+					{
+						"text": "Do something!\nPrefer calling several tools at the same time to save round-trips.\n\n\nUse set-results tool to provide results of the analysis.\nIt must be called exactly once before the final reply.\nIgnore results of this tool.\n"
+					}
+				],
+				"role": "user"
+			},
+			"temperature": 0.3,
+			"tools": [
+				{
+					"functionDeclarations": [
+						{
+							"description": "tool description",
+							"name": "tool1",
+							"parametersJsonSchema": {
+								"type": "object",
+								"properties": {
+									"Tool1Arg": {
+										"type": "string",
+										"description": "arg"
+									}
+								},
+								"required": [
+									"Tool1Arg"
+								],
+								"additionalProperties": false
+							},
+							"responseJsonSchema": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						}
+					]
+				},
+				{
+					"functionDeclarations": [
+						{
+							"description": "tool description",
+							"name": "tool2",
+							"parametersJsonSchema": {
+								"type": "object",
+								"properties": {
+									"Tool2Arg": {
+										"type": "integer",
+										"description": "arg"
+									}
+								},
+								"required": [
+									"Tool2Arg"
+								],
+								"additionalProperties": false
+							},
+							"responseJsonSchema": {
+								"type": "object",
+								"properties": {
+									"Result": {
+										"type": "integer",
+										"description": "arg"
+									}
+								},
+								"required": [
+									"Result"
+								],
+								"additionalProperties": false
+							}
+						}
+					]
+				},
+				{
+					"functionDeclarations": [
+						{
+							"description": "Use this tool to provide results of the analysis.",
+							"name": "set-results",
+							"parametersJsonSchema": {
+								"type": "object",
+								"properties": {
+									"AdditionalOutput": {
+										"type": "integer",
+										"description": "arg"
+									}
+								},
+								"required": [
+									"AdditionalOutput"
+								],
+								"additionalProperties": false
+							},
+							"responseJsonSchema": {
+								"type": "object",
+								"properties": {
+									"AdditionalOutput": {
+										"type": "integer",
+										"description": "arg"
+									}
+								},
+								"required": [
+									"AdditionalOutput"
+								],
+								"additionalProperties": false
+							}
+						}
+					]
+				}
+			],
+			"thinkingLevel": 3,
+			"includeThoughts": true
+		},
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			}
+		]
+	},
+	{
+		"Model": "model",
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"Tool1Arg": "string"
+							},
+							"name": "tool1"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"Tool2Arg": "string-instead-of-int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id3",
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id4",
+							"args": {
+								"Tool2Arg": 0,
+								"Tool2Arg2": 100
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id5",
+							"args": {
+								"Arg": 0
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id6",
+							"args": {
+								"WrongArg": 0
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"name": "tool1"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"error": "argument \"Tool2Arg\" has wrong type: got string, want int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id3",
+							"response": {
+								"error": "missing argument \"Tool2Arg\""
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id4",
+							"response": {
+								"Result": 42
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id5",
+							"response": {
+								"error": "tool \"tool3\" does not exist, please correct the name"
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id6",
+							"response": {
+								"error": "missing argument \"AdditionalOutput\""
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			}
+		]
+	},
+	{
+		"Model": "model",
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"Tool1Arg": "string"
+							},
+							"name": "tool1"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"Tool2Arg": "string-instead-of-int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id3",
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id4",
+							"args": {
+								"Tool2Arg": 0,
+								"Tool2Arg2": 100
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id5",
+							"args": {
+								"Arg": 0
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id6",
+							"args": {
+								"WrongArg": 0
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"name": "tool1"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"error": "argument \"Tool2Arg\" has wrong type: got string, want int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id3",
+							"response": {
+								"error": "missing argument \"Tool2Arg\""
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id4",
+							"response": {
+								"Result": 42
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id5",
+							"response": {
+								"error": "tool \"tool3\" does not exist, please correct the name"
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id6",
+							"response": {
+								"error": "missing argument \"AdditionalOutput\""
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"text": "I am done"
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"text": "You did not call set-results tool.\nPlease call set-results tool to provide results of the analysis.\nNote: if you already provided you final reply, you will need to provide it again after calling set-results tool.\nOr did you want to call some other tools, but did not actually do that?\n"
+					}
+				],
+				"role": "user"
+			}
+		]
+	},
+	{
+		"Model": "model",
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"Tool1Arg": "string"
+							},
+							"name": "tool1"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"Tool2Arg": "string-instead-of-int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id3",
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id4",
+							"args": {
+								"Tool2Arg": 0,
+								"Tool2Arg2": 100
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id5",
+							"args": {
+								"Arg": 0
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id6",
+							"args": {
+								"WrongArg": 0
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"name": "tool1"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"error": "argument \"Tool2Arg\" has wrong type: got string, want int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id3",
+							"response": {
+								"error": "missing argument \"Tool2Arg\""
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id4",
+							"response": {
+								"Result": 42
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id5",
+							"response": {
+								"error": "tool \"tool3\" does not exist, please correct the name"
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id6",
+							"response": {
+								"error": "missing argument \"AdditionalOutput\""
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"text": "I am done"
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"text": "You did not call set-results tool.\nPlease call set-results tool to provide results of the analysis.\nNote: if you already provided you final reply, you will need to provide it again after calling set-results tool.\nOr did you want to call some other tools, but did not actually do that?\n"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"AdditionalOutput": 1
+							},
+							"name": "set-results"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"AdditionalOutput": 2
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"response": {
+								"AdditionalOutput": 1
+							},
+							"name": "set-results"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"AdditionalOutput": 2
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			}
+		]
+	},
+	{
+		"Model": "model",
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"Tool1Arg": "string"
+							},
+							"name": "tool1"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"Tool2Arg": "string-instead-of-int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id3",
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id4",
+							"args": {
+								"Tool2Arg": 0,
+								"Tool2Arg2": 100
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id5",
+							"args": {
+								"Arg": 0
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id6",
+							"args": {
+								"WrongArg": 0
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"name": "tool1"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"error": "argument \"Tool2Arg\" has wrong type: got string, want int"
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id3",
+							"response": {
+								"error": "missing argument \"Tool2Arg\""
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id4",
+							"response": {
+								"Result": 42
+							},
+							"name": "tool2"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id5",
+							"response": {
+								"error": "tool \"tool3\" does not exist, please correct the name"
+							},
+							"name": "tool3"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id6",
+							"response": {
+								"error": "missing argument \"AdditionalOutput\""
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"text": "I am done"
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"text": "You did not call set-results tool.\nPlease call set-results tool to provide results of the analysis.\nNote: if you already provided you final reply, you will need to provide it again after calling set-results tool.\nOr did you want to call some other tools, but did not actually do that?\n"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id1",
+							"args": {
+								"AdditionalOutput": 1
+							},
+							"name": "set-results"
+						}
+					},
+					{
+						"functionCall": {
+							"id": "id2",
+							"args": {
+								"AdditionalOutput": 2
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id1",
+							"response": {
+								"AdditionalOutput": 1
+							},
+							"name": "set-results"
+						}
+					},
+					{
+						"functionResponse": {
+							"id": "id2",
+							"response": {
+								"AdditionalOutput": 2
+							},
+							"name": "set-results"
+						}
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"text": "empty"
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"text": "You did not provide any final reply to the question. Please return something.\nOr did you want to call some other tools, but did not actually do that?\n"
+					}
+				],
+				"role": "user"
+			}
+		]
+	}
+]

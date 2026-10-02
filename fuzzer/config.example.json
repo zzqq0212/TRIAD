@@ -1,0 +1,18 @@
+{
+  "target": "linux/amd64",
+  "http": "127.0.0.1:56727",
+  "workdir": "REPLACE_WITH_WORKDIR",
+  "kernel_obj": "REPLACE_WITH_KERNEL_OBJ_DIR",
+  "image": "REPLACE_WITH_BOOT_IMAGE",
+  "sshkey": "REPLACE_WITH_SSH_KEY",
+  "syzkaller": "REPLACE_WITH_FUZZER_DIR",
+  "procs": 4,
+  "reproduce": false,
+  "type": "qemu",
+  "vm": {
+    "count": 1,
+    "kernel": "REPLACE_WITH_BZIMAGE",
+    "cpu": 2,
+    "mem": 4096
+  }
+}

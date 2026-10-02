@@ -1,0 +1,8 @@
+{
+  "id": "REPLACE_WITH_TARGET_ID",
+  "source_sha256": "REPLACE_WITH_64_HEX_SOURCE_TREE_DIGEST",
+  "config_sha256": "REPLACE_WITH_64_HEX_CONFIG_DIGEST",
+  "baseline": "qemu snapshot 0 (clean reset baseline)",
+  "environment": "ubuntu-22.04 qemu kvm x86_64",
+  "capabilities": ["kasan", "kcov", "kprobe", "ftrace"]
+}

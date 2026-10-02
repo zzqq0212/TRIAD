@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "status": "draft",
+  "source_window": {"start": null, "end": null},
+  "inclusion_criteria": null,
+  "oracle_policy_ref": null,
+  "hardware_description": null,
+  "seeds": [],
+  "budgets": {"wall_seconds": null, "executions": null, "llm_calls": null, "llm_tokens": null},
+  "confirmation": {"q": null, "n_c": null},
+  "configurations": []
+}

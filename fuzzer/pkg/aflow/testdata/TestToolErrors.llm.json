@@ -1,0 +1,96 @@
+[
+	{
+		"Model": "model",
+		"Config": {
+			"systemInstruction": {
+				"parts": [
+					{
+						"text": "Instruction\nPrefer calling several tools at the same time to save round-trips.\n"
+					}
+				],
+				"role": "user"
+			},
+			"temperature": 0.3,
+			"tools": [
+				{
+					"functionDeclarations": [
+						{
+							"description": "tool 1 description",
+							"name": "faulty",
+							"parametersJsonSchema": {
+								"type": "object",
+								"properties": {
+									"CallError": {
+										"type": "boolean",
+										"description": "call error"
+									}
+								},
+								"required": [
+									"CallError"
+								],
+								"additionalProperties": false
+							},
+							"responseJsonSchema": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						}
+					]
+				}
+			],
+			"thinkingLevel": 3,
+			"includeThoughts": true
+		},
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			}
+		]
+	},
+	{
+		"Model": "model",
+		"Request": [
+			{
+				"parts": [
+					{
+						"text": "Prompt"
+					}
+				],
+				"role": "user"
+			},
+			{
+				"parts": [
+					{
+						"functionCall": {
+							"id": "id0",
+							"args": {
+								"CallError": true
+							},
+							"name": "faulty"
+						}
+					}
+				],
+				"role": "model"
+			},
+			{
+				"parts": [
+					{
+						"functionResponse": {
+							"id": "id0",
+							"response": {
+								"error": "you are wrong"
+							},
+							"name": "faulty"
+						}
+					}
+				],
+				"role": "user"
+			}
+		]
+	}
+]

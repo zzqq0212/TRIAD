@@ -1,0 +1,17 @@
+name: Ubuntu validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run validation (doctor, unit tests, dry-run, records, export)
+        run: bash scripts/validate-ubuntu.sh
